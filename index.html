@@ -31,6 +31,9 @@ input[type=range]{width:100%;accent-color:var(--blu);margin:.6rem 0 .2rem}
 .bott{display:flex;flex-wrap:wrap;gap:.35rem}
 .bott button{font:inherit;font-size:.88rem;padding:.3rem .65rem;border:1.5px solid var(--g);background:#fff;color:#000;cursor:pointer}
 .bott button[aria-pressed=true]{background:var(--blu);border-color:var(--blu);color:#fff;font-weight:600}
+.bott button small{display:block;font-size:.72rem;font-weight:400;line-height:1.2}
+#preset{gap:.3rem}
+#preset button{padding:.3rem .4rem}
 .guida-btn{font:inherit;font-size:.88rem;font-weight:600;color:var(--scuro);background:none;border:0;border-bottom:1.5px solid var(--blu);padding:0;margin-top:.7rem;cursor:pointer}
 .avviso{font-size:.8rem;font-weight:600;margin-top:.35rem}
 .ris{display:flex;flex-wrap:wrap;gap:1.2rem 2rem;align-items:flex-end;margin:1.6rem 0 1.2rem}
@@ -96,11 +99,12 @@ dialog .chiudi{position:absolute;top:.6rem;right:.7rem;font:inherit;font-size:1.
       <div class="riga"><input type="number" id="kwh" min="300" max="10000" step="50" value="2000" inputmode="numeric"> <span>kWh</span></div>
       <input type="range" id="kwhR" min="500" max="6000" step="50" value="2000" aria-label="Consumo annuo in kWh">
       <div class="bott" id="preset" role="group" aria-label="Consumi tipici">
-        <button type="button" data-v="1500" aria-pressed="false">1.500</button>
-        <button type="button" data-v="2000" aria-pressed="true">2.000</button>
-        <button type="button" data-v="2700" aria-pressed="false">2.700</button>
-        <button type="button" data-v="3500" aria-pressed="false">3.500</button>
+        <button type="button" data-v="1500" aria-pressed="false">1.500<small>(1 persona)</small></button>
+        <button type="button" data-v="2000" aria-pressed="true">2.000<small>(2 persone)</small></button>
+        <button type="button" data-v="2700" aria-pressed="false">2.700<small>(3-4 persone)</small></button>
+        <button type="button" data-v="3500" aria-pressed="false">3.500<small>(5 o pi&#249;)</small></button>
       </div>
+      <div class="aiuto">Il numero di persone &#232; solo un esempio per orientarsi e rende il calcolo meno preciso: i consumi reali dipendono dalla casa, dagli elettrodomestici e dalle abitudini. Per un risultato pi&#249; accurato usa i kWh della tua bolletta</div>
       <div class="aiuto soloRif">2.000 kWh &#232; il cliente tipo ARERA</div>
       <div class="soloMia">
         <label class="et" for="spesa" style="margin-top:1rem">Quanto hai speso in un anno <span style="font-weight:400">(facoltativo)</span></label>
@@ -113,7 +117,7 @@ dialog .chiudi{position:absolute;top:.6rem;right:.7rem;font:inherit;font-size:1.
       <div class="soloRif">
         <span class="et" id="etKw">Potenza del contatore</span>
         <div class="bott" id="kw" role="group" aria-labelledby="etKw">
-          <button type="button" data-v="3" aria-pressed="true">3 kW</button>
+          <button type="button" data-v="3" aria-pressed="true">3 kW<small>(standard)</small></button>
           <button type="button" data-v="4.5" aria-pressed="false">4,5 kW</button>
           <button type="button" data-v="6" aria-pressed="false">6 kW</button>
         </div>
