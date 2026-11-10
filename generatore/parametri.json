@@ -1,0 +1,10 @@
+{
+  "_nota": "Parametri modificabili a mano. Taglio e onere: stime del ministro Pichetto Fratin (9 e 10 novembre 2026), da aggiornare quando il decreto e' in Gazzetta. Accisa: D.Lgs. 504/1995, art. 52. Perdite BT: ARERA, Tabella 4 del TIS.",
+  "taglio_eur_mwh": 15.0,
+  "onere_quota": 0.40,
+  "accisa_eur_kwh": 0.0227,
+  "iva": 0.10,
+  "perdite_bt": 0.10,
+  "nota_decreto": "Taglio di 15 euro al megawattora sul prezzo all’ingrosso da gennaio e onere pari al 40% del beneficio: stime del ministro, il testo del decreto non è ancora in Gazzetta",
+  "fonte_decreto": "dichiarazioni del ministro Pichetto Fratin del 9 e 10 novembre 2026"
+}

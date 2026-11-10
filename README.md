@@ -15,3 +15,9 @@ Pagina pubblicata: https://liberostracquadanio-del.github.io/simulatore-bolletta
 <iframe src="https://liberostracquadanio-del.github.io/simulatore-bolletta-luce/" title="Simulatore della bolletta della luce" style="width:100%;border:0;height:1000px" loading="lazy"></iframe>
 ```
 Il file `index.html` è generato da uno script a partire dai dati ARERA: non va modificato a mano.
+
+## Aggiornamento automatico
+- Il 2 di ogni mese l'azione `.github/workflows/aggiorna.yml` scarica il file ARERA delle condizioni economiche per i clienti vulnerabili, legge il trimestre più recente, controlla struttura e valori e rigenera la pagina (`generatore/aggiorna.py`, modello in `generatore/modello.html`).
+- Se c'è un trimestre nuovo apre una pull request con il confronto dei numeri del cliente tipo ARERA: la pagina online cambia solo dopo il «Merge».
+- Se un controllo non passa apre una segnalazione (issue) e non tocca la pagina.
+- Taglio, onere, accisa, IVA e perdite di rete si cambiano a mano in `generatore/parametri.json`, poi si lancia l'azione dalla scheda Actions («Run workflow»).

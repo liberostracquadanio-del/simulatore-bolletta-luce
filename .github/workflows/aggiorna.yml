@@ -1,0 +1,73 @@
+name: Aggiornamento tariffe ARERA
+
+# Il 2 di ogni mese alle 6 UTC, oppure a mano dalla scheda Actions («Run workflow»).
+on:
+  schedule:
+    - cron: "0 6 2 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+concurrency: aggiornamento-arera
+
+jobs:
+  aggiorna:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PROPRIETARIO: ${{ github.repository_owner }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Installa openpyxl
+        run: pip install openpyxl==3.1.5
+
+      - name: Configura git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      # GitHub sospende le azioni programmate dopo 60 giorni senza attività nel repository:
+      # una riga al mese con la data del controllo le tiene attive.
+      - name: Registra il controllo
+        run: |
+          date -u +"%Y-%m-%d %H:%M UTC" > generatore/ultimo-controllo.txt
+          git add generatore/ultimo-controllo.txt
+          git commit -m "Controllo mensile delle tariffe ARERA"
+          git push
+
+      - name: Rigenera la pagina con l'ultimo trimestre ARERA
+        run: python generatore/aggiorna.py --riepilogo "$RUNNER_TEMP/riepilogo.md"
+
+      - name: Proponi l'aggiornamento (pull request)
+        run: |
+          if git diff --quiet -- index.html generatore/tariffe.json; then
+            echo "Nessun nuovo trimestre: la pagina resta com'è"
+            exit 0
+          fi
+          PERIODO=$(python -c "import json; print(json.load(open('generatore/tariffe.json', encoding='utf8'))['periodo'])")
+          git switch -C aggiornamento-arera
+          git add index.html generatore/tariffe.json
+          git commit -m "Tariffe ARERA: $PERIODO"
+          git push -f origin aggiornamento-arera
+          APERTA=$(gh pr list --head aggiornamento-arera --state open --json number -q '.[0].number')
+          if [ -n "$APERTA" ]; then
+            gh pr edit "$APERTA" --title "Tariffe ARERA: $PERIODO" --body-file "$RUNNER_TEMP/riepilogo.md"
+          else
+            gh pr create --head aggiornamento-arera --base main --assignee "$PROPRIETARIO" \
+              --title "Tariffe ARERA: $PERIODO" --body-file "$RUNNER_TEMP/riepilogo.md"
+          fi
+
+      - name: Segnala il problema
+        if: failure()
+        run: |
+          gh issue create --assignee "$PROPRIETARIO" \
+            --title "Aggiornamento del simulatore non riuscito ($(date -u +%Y-%m-%d))" \
+            --body "Il controllo mensile delle tariffe ARERA non è andato a buon fine: la pagina online non è stata toccata. Il motivo è nel registro dell'esecuzione: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
