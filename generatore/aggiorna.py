@@ -119,9 +119,14 @@ def genera_html(periodo, url, res, nonres, p):
     link = lambda href, testo: f"<a target='_blank' rel='noopener' href='{href}'>{testo}</a>"
     fonte = ("Fonte: ARERA, " + link(url, f"condizioni economiche per i clienti vulnerabili in maggior tutela, {periodo}")
              + "; " + link("https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:1995-10-26;504~art52",
-                           "D.Lgs. 504/1995, art. 52") + f" e Agenzia delle Dogane (accisa); {p['fonte_decreto']}; elaborazione")
-    note = (f"Spesa in un anno con le tariffe ARERA di {periodo} per i clienti vulnerabili, tasse incluse, "
-            f"come se restassero uguali per dodici mesi. {p['nota_decreto']}. Nel mercato libero i prezzi sono diversi")
+                           "D.Lgs. 504/1995, art. 52") + " e Agenzia delle Dogane (accisa); ARERA, "
+             + link("https://www.arera.it/fileadmin/allegati/relaz_ann/26/RA26_Volume_1.pdf",
+                    "Relazione annuale 2026, vol. 1") + " (utenze per tipo di prezzo, pp. 156, 199 e 201) e "
+             + link("https://www.arera.it/fileadmin/allegati/docs/25/204-2025-R-com-ALLEGATO_A.pdf",
+                    "glossario della bolletta") + f"; {p['fonte_decreto']}; elaborazione")
+    note = (f"Bolletta di riferimento: tariffe ARERA di {periodo} per i clienti vulnerabili, tasse incluse, "
+            f"come se restassero uguali per dodici mesi; nel mercato libero i prezzi sono diversi. "
+            f"Il risparmio netto vale per tutti i contratti a prezzo variabile. {p['nota_decreto']}")
     arr = lambda d: {k: round(v, 6) for k, v in d.items()}
     parametri = {"res": arr(res), "nonres": arr(nonres), "accisa": p["accisa_eur_kwh"], "iva": p["iva"],
                  "perdite": p["perdite_bt"], "taglio": p["taglio_eur_mwh"], "onere": p["onere_quota"]}
