@@ -11,12 +11,14 @@
 *{box-sizing:border-box}
 html,body{margin:0;background:#ffffff}
 body{font-family:'Source Serif 4',Georgia,serif;color:#000000;font-size:16px;line-height:1.4}
-.sim{max-width:46rem;margin:0 auto;padding:1rem}
+.sim{max-width:46rem;margin:0 auto;padding:1rem;position:relative}
 .box{display:inline-flex;align-items:center;gap:.55rem;border:1.5px solid var(--blu);padding:0 1.8rem 0 0;margin-bottom:1rem}
 .box b{background:var(--blu);color:#fff;font-weight:700;padding:.15rem .6rem;font-size:1.05rem}
 .box span{font-size:.75rem;font-weight:700;letter-spacing:.04em;color:var(--blu)}
 h1{font-size:clamp(2rem,7vw,3rem);font-weight:700;line-height:1.05;margin:0 0 .6rem}
-.sotto{font-size:1rem;margin:0 0 1.4rem}
+.sotto{font-size:1rem;margin:0 0 1.2rem}
+.modo{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem .8rem;margin-bottom:.8rem}
+.modo .et{margin:0}
 .campi{background:var(--fondo);padding:1.1rem 1.2rem;display:flex;flex-wrap:wrap;gap:1.1rem 2rem}
 .campo{flex:1 1 17rem;min-width:0}
 .campo.corto{flex:1 1 12rem}
@@ -29,6 +31,8 @@ input[type=range]{width:100%;accent-color:var(--blu);margin:.6rem 0 .2rem}
 .bott{display:flex;flex-wrap:wrap;gap:.35rem}
 .bott button{font:inherit;font-size:.88rem;padding:.3rem .65rem;border:1.5px solid var(--g);background:#fff;color:#000;cursor:pointer}
 .bott button[aria-pressed=true]{background:var(--blu);border-color:var(--blu);color:#fff;font-weight:600}
+.guida-btn{font:inherit;font-size:.88rem;font-weight:600;color:var(--scuro);background:none;border:0;border-bottom:1.5px solid var(--blu);padding:0;margin-top:.7rem;cursor:pointer}
+.avviso{font-size:.8rem;font-weight:600;margin-top:.35rem}
 .ris{display:flex;flex-wrap:wrap;gap:1.2rem 2rem;align-items:flex-end;margin:1.6rem 0 1.2rem}
 .nb{flex:1 1 15rem;min-width:0}
 .nb .n{font-size:clamp(3.6rem,13vw,5.8rem);line-height:1;color:var(--blu);font-weight:400}
@@ -43,19 +47,48 @@ input[type=range]{width:100%;accent-color:var(--blu);margin:.6rem 0 .2rem}
 .leg{display:flex;flex-wrap:wrap;gap:.35rem 1.2rem;font-size:.85rem;margin-top:.55rem}
 .leg i{display:inline-block;width:.8rem;height:.8rem;margin-right:.35rem;vertical-align:-.05rem}
 .spese{display:flex;flex-wrap:wrap;gap:.4rem 2rem;font-size:.95rem;margin-top:1rem}
+.vuoto{font-size:.9rem;background:var(--fondo);padding:.7rem 1rem}
+.contesto{font-size:.9rem;margin-top:1.3rem;padding-left:.8rem;border-left:3px solid var(--blu)}
 .fisso{display:none;background:var(--fondo);padding:1rem 1.2rem;margin:1.6rem 0 1.2rem;font-size:1rem}
 .sim.f .fisso{display:block}
 .sim.f .soloVar{display:none}
+.sim.mia .soloRif{display:none}
+.sim:not(.mia) .soloMia{display:none}
 .piede{border-top:1px solid var(--linea);margin-top:1.6rem;padding-top:.8rem;font-size:.8rem}
 .piede p{margin:0 0 .5rem}
 .piede a{color:#000}
+dialog{border:0;padding:1.2rem 1.2rem 1rem;width:min(44rem,calc(100% - 2rem));max-width:none;margin:0 auto;position:absolute;color:#000;background:#fff;box-shadow:0 .5rem 2rem rgba(0,0,0,.25)}
+dialog::backdrop{background:rgba(0,0,0,.45)}
+dialog h2{font-size:1.35rem;font-weight:700;line-height:1.15;margin:0 1.8rem .4rem 0}
+dialog .chiudi{position:absolute;top:.6rem;right:.7rem;font:inherit;font-size:1.6rem;line-height:1;background:none;border:0;cursor:pointer;padding:.1rem .4rem}
+.pagine{display:flex;flex-wrap:wrap;gap:1rem;margin:.9rem 0 .6rem}
+.pagina{flex:1 1 11rem;min-width:0}
+.pagina svg{display:block;width:100%;max-width:13rem;height:auto;margin:0 auto .5rem}
+.pagina b{display:block;font-size:.95rem}
+.pagina p{margin:.15rem 0 0;font-size:.85rem}
+.n-tondo{display:inline-block;width:1.4rem;height:1.4rem;line-height:1.4rem;text-align:center;border-radius:50%;background:var(--blu);color:#fff;font-weight:700;font-size:.85rem;margin-right:.35rem}
+.nota-guida{font-size:.8rem;border-top:1px solid var(--linea);padding-top:.6rem;margin:0}
+@media (max-width:34rem){
+  dialog{width:calc(100% - 1.2rem);padding:1rem .9rem .8rem}
+  .pagine{gap:.8rem}
+  .pagina{flex:1 1 100%;display:flex;gap:.8rem;align-items:flex-start}
+  .pagina svg{flex:0 0 4.6rem;width:4.6rem;margin:0}
+}
 </style>
 </head>
 <body>
 <div class="sim" id="sim">
   <div class="box"><b>1</b><span>IL CALCOLATORE</span></div>
   <h1>Quanto risparmi sulla luce</h1>
-  <p class="sotto">La spesa in un anno con le tariffe di oggi, con e senza il tetto al gas del Decreto Bollette bis</p>
+  <p class="sotto">La spesa in un anno con e senza il tetto al gas del Decreto Bollette bis</p>
+
+  <div class="modo">
+    <span class="et" id="etModo">Calcola con</span>
+    <div class="bott" id="modo" role="group" aria-labelledby="etModo">
+      <button type="button" data-v="rif" aria-pressed="true">Una bolletta di riferimento</button>
+      <button type="button" data-v="mia" aria-pressed="false">La mia bolletta</button>
+    </div>
+  </div>
 
   <div class="campi">
     <div class="campo">
@@ -68,30 +101,39 @@ input[type=range]{width:100%;accent-color:var(--blu);margin:.6rem 0 .2rem}
         <button type="button" data-v="2700" aria-pressed="false">2.700</button>
         <button type="button" data-v="3500" aria-pressed="false">3.500</button>
       </div>
-      <div class="aiuto">Il consumo annuo &#232; scritto in bolletta, di solito nella prima o nella seconda pagina. 2.000 kWh &#232; il cliente tipo ARERA</div>
+      <div class="aiuto soloRif">2.000 kWh &#232; il cliente tipo ARERA</div>
+      <div class="soloMia">
+        <label class="et" for="spesa" style="margin-top:1rem">Quanto hai speso in un anno <span style="font-weight:400">(facoltativo)</span></label>
+        <div class="riga"><input type="number" id="spesa" min="0" max="20000" step="1" placeholder="es. 900" inputmode="decimal"> <span>&#8364;</span></div>
+        <div class="avviso" id="avviso" hidden></div>
+        <button type="button" class="guida-btn" id="apriGuida">Dove trovo questi dati in bolletta?</button>
+      </div>
     </div>
     <div class="campo corto">
-      <span class="et" id="etKw">Potenza del contatore</span>
-      <div class="bott" id="kw" role="group" aria-labelledby="etKw">
-        <button type="button" data-v="3" aria-pressed="true">3 kW</button>
-        <button type="button" data-v="4.5" aria-pressed="false">4,5 kW</button>
-        <button type="button" data-v="6" aria-pressed="false">6 kW</button>
+      <div class="soloRif">
+        <span class="et" id="etKw">Potenza del contatore</span>
+        <div class="bott" id="kw" role="group" aria-labelledby="etKw">
+          <button type="button" data-v="3" aria-pressed="true">3 kW</button>
+          <button type="button" data-v="4.5" aria-pressed="false">4,5 kW</button>
+          <button type="button" data-v="6" aria-pressed="false">6 kW</button>
+        </div>
+        <span class="et" id="etRes" style="margin-top:.9rem">&#200; la casa di residenza?</span>
+        <div class="bott" id="res" role="group" aria-labelledby="etRes" style="margin-bottom:.9rem">
+          <button type="button" data-v="1" aria-pressed="true">S&#236;</button>
+          <button type="button" data-v="0" aria-pressed="false">No</button>
+        </div>
       </div>
-      <span class="et" id="etRes" style="margin-top:.9rem">&#200; la casa di residenza?</span>
-      <div class="bott" id="res" role="group" aria-labelledby="etRes">
-        <button type="button" data-v="1" aria-pressed="true">S&#236;</button>
-        <button type="button" data-v="0" aria-pressed="false">No</button>
-      </div>
-      <span class="et" id="etPr" style="margin-top:.9rem">Il tuo prezzo &#232;</span>
+      <span class="et" id="etPr">Il tuo prezzo &#232;</span>
       <div class="bott" id="prezzo" role="group" aria-labelledby="etPr">
         <button type="button" data-v="var" aria-pressed="true">Variabile</button>
         <button type="button" data-v="fisso" aria-pressed="false">Fisso</button>
       </div>
+      <div class="aiuto">Lo trovi nel Box dell&#8217;offerta, nella seconda pagina della bolletta. Se il prezzo segue il PUN, &#232; variabile</div>
     </div>
   </div>
 
   <div aria-live="polite">
-    <div class="fisso"><b>Con il prezzo fisso il decreto non cambia la tua bolletta</b>, n&#233; con il taglio n&#233; con l&#8217;onere, finch&#233; il contratto non scade. Qui sotto, com&#8217;&#232; fatta la bolletta con le tariffe ARERA di oggi</div>
+    <div class="fisso"><b>Con il prezzo fisso il decreto non cambia la tua bolletta</b>, n&#233; con il taglio n&#233; con l&#8217;onere, finch&#233; il contratto non scade</div>
     <div class="ris">
       <div class="nb" id="nbBox"><div class="n" id="nb">22 &#8364;</div><div class="t" id="nbT">risparmio netto in un anno</div></div>
       <div class="conto soloVar">
@@ -100,24 +142,85 @@ input[type=range]{width:100%;accent-color:var(--blu);margin:.6rem 0 .2rem}
         <div><span>Risparmio netto</span><span id="cNetto"></span></div>
       </div>
     </div>
-    <div class="tit">COM&#8217;&#200; FATTA LA TUA BOLLETTA IN UN ANNO</div>
-    <div class="barra" id="barra"></div>
-    <div class="leg" id="leg"></div>
-    <div class="spese">
-      <div>Con le tariffe di oggi: <b id="sOggi"></b></div>
-      <div class="soloVar">Con il decreto: <b id="sDec"></b></div>
+    <div id="grafico">
+      <div class="tit" id="titBarra">LA BOLLETTA DI RIFERIMENTO IN UN ANNO</div>
+      <div class="barra" id="barra"></div>
+      <div class="leg" id="leg"></div>
+      <div class="spese">
+        <div><span id="etOggi">Con le tariffe di oggi</span>: <b id="sOggi"></b></div>
+        <div class="soloVar">Con il decreto: <b id="sDec"></b></div>
+      </div>
     </div>
+    <div class="vuoto" id="vuoto" hidden>Inserisci quanto hai speso in un anno per vedere quanto pesa il risparmio sulla tua bolletta</div>
+    <div class="contesto">Il taglio arriva solo a chi ha un prezzo variabile: nel 2025 circa 6 utenze domestiche su 10. Il risparmio netto dipende solo dai kWh consumati, non dal fornitore</div>
   </div>
 
   <div class="piede">
-    <p>Spesa in un anno con le tariffe ARERA di ottobre-dicembre 2026 per i clienti vulnerabili, tasse incluse, come se restassero uguali per dodici mesi. Taglio di 15 euro al megawattora sul prezzo all&#8217;ingrosso da gennaio e onere pari al 40% del beneficio: stime del ministro, il testo del decreto non &#232; ancora in Gazzetta. Nel mercato libero i prezzi sono diversi</p>
-    <p>Fonte: ARERA, <a target='_blank' rel='noopener' href='https://www.arera.it/fileadmin//area_operatori/prezzi_e_tariffe/E2026-smt.xlsx'>condizioni economiche per i clienti vulnerabili in maggior tutela, ottobre-dicembre 2026</a>; <a target='_blank' rel='noopener' href='https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:1995-10-26;504~art52'>D.Lgs. 504/1995, art. 52</a> e Agenzia delle Dogane (accisa); dichiarazioni del ministro Pichetto Fratin del 9 e 10 novembre 2026; elaborazione</p>
+    <p>Bolletta di riferimento: tariffe ARERA di ottobre-dicembre 2026 per i clienti vulnerabili, tasse incluse, come se restassero uguali per dodici mesi; nel mercato libero i prezzi sono diversi. Il risparmio netto vale per tutti i contratti a prezzo variabile. Taglio di 15 euro al megawattora sul prezzo all&#8217;ingrosso da gennaio e onere pari al 40% del beneficio: stime del ministro, il testo del decreto non &#232; ancora in Gazzetta</p>
+    <p>Fonte: ARERA, <a target='_blank' rel='noopener' href='https://www.arera.it/fileadmin//area_operatori/prezzi_e_tariffe/E2026-smt.xlsx'>condizioni economiche per i clienti vulnerabili in maggior tutela, ottobre-dicembre 2026</a>; <a target='_blank' rel='noopener' href='https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:1995-10-26;504~art52'>D.Lgs. 504/1995, art. 52</a> e Agenzia delle Dogane (accisa); ARERA, <a target='_blank' rel='noopener' href='https://www.arera.it/fileadmin/allegati/relaz_ann/26/RA26_Volume_1.pdf'>Relazione annuale 2026, vol. 1</a> (utenze per tipo di prezzo, pp. 156, 199 e 201) e <a target='_blank' rel='noopener' href='https://www.arera.it/fileadmin/allegati/docs/25/204-2025-R-com-ALLEGATO_A.pdf'>glossario della bolletta</a>; dichiarazioni del ministro Pichetto Fratin del 9 e 10 novembre 2026; elaborazione</p>
   </div>
+
+  <dialog id="guida" aria-labelledby="titGuida">
+    <button type="button" class="chiudi" id="chiudiGuida" aria-label="Chiudi">&#215;</button>
+    <h2 id="titGuida">Dove trovi i dati nella tua bolletta</h2>
+    <div style="font-size:.9rem">Le bollette della luce hanno lo stesso schema per tutti i fornitori</div>
+    <div class="pagine">
+      <div class="pagina">
+        <svg viewBox="0 0 160 210" aria-hidden="true">
+          <rect x="1" y="1" width="158" height="208" fill="#fff" stroke="#9a9a9a" stroke-width="1.5"/>
+          <rect x="12" y="12" width="56" height="8" fill="#3a3a3a"/>
+          <rect x="12" y="28" width="90" height="4" fill="#d9d9d9"/><rect x="12" y="36" width="70" height="4" fill="#d9d9d9"/>
+          <rect x="12" y="52" width="136" height="34" fill="#f4f4f2"/>
+          <rect x="20" y="60" width="50" height="5" fill="#9a9a9a"/><rect x="20" y="71" width="70" height="9" fill="#3a3a3a"/>
+          <rect x="12" y="96" width="136" height="38" fill="#fff" stroke="#009cdf" stroke-width="3"/>
+          <rect x="20" y="104" width="64" height="5" fill="#9a9a9a"/><rect x="20" y="115" width="52" height="11" fill="#009cdf"/>
+          <rect x="12" y="146" width="136" height="4" fill="#d9d9d9"/><rect x="12" y="155" width="110" height="4" fill="#d9d9d9"/><rect x="12" y="164" width="124" height="4" fill="#d9d9d9"/>
+          <rect x="12" y="180" width="136" height="18" fill="#f4f4f2"/>
+          <circle cx="148" cy="96" r="10" fill="#009cdf"/><text x="148" y="100.5" text-anchor="middle" font-size="12" font-weight="700" fill="#fff" font-family="Georgia,serif">1</text>
+        </svg>
+        <div><b><span class="n-tondo">1</span>Prima pagina</b>
+        <p>La voce <b style="display:inline">Consumo annuo aggiornato</b>, in kWh: sono i consumi degli ultimi 12 mesi</p></div>
+      </div>
+      <div class="pagina">
+        <svg viewBox="0 0 160 210" aria-hidden="true">
+          <rect x="1" y="1" width="158" height="208" fill="#fff" stroke="#9a9a9a" stroke-width="1.5"/>
+          <rect x="12" y="12" width="80" height="5" fill="#d9d9d9"/><rect x="12" y="21" width="60" height="5" fill="#d9d9d9"/>
+          <rect x="12" y="34" width="136" height="76" fill="#f4f4f2"/>
+          <rect x="20" y="42" width="60" height="7" fill="#3a3a3a"/>
+          <rect x="20" y="56" width="120" height="4" fill="#d9d9d9"/><rect x="20" y="65" width="120" height="4" fill="#d9d9d9"/><rect x="20" y="74" width="120" height="4" fill="#d9d9d9"/><rect x="20" y="83" width="120" height="4" fill="#d9d9d9"/>
+          <rect x="20" y="96" width="120" height="6" fill="#9a9a9a"/>
+          <rect x="12" y="120" width="136" height="78" fill="#fff" stroke="#009cdf" stroke-width="3"/>
+          <rect x="20" y="128" width="64" height="7" fill="#3a3a3a"/>
+          <rect x="20" y="143" width="44" height="5" fill="#9a9a9a"/><rect x="70" y="141" width="66" height="10" fill="#009cdf"/>
+          <rect x="20" y="160" width="116" height="4" fill="#d9d9d9"/><rect x="20" y="169" width="96" height="4" fill="#d9d9d9"/><rect x="20" y="178" width="108" height="4" fill="#d9d9d9"/>
+          <circle cx="148" cy="120" r="10" fill="#009cdf"/><text x="148" y="124.5" text-anchor="middle" font-size="12" font-weight="700" fill="#fff" font-family="Georgia,serif">2</text>
+        </svg>
+        <div><b><span class="n-tondo">2</span>Seconda pagina</b>
+        <p>Nel <b style="display:inline">Box dell&#8217;offerta</b>, la tipologia: prezzo fisso o variabile. Per il variabile c&#8217;&#232; anche l&#8217;indice, di solito il PUN</p></div>
+      </div>
+      <div class="pagina">
+        <svg viewBox="0 0 160 210" aria-hidden="true">
+          <rect x="1" y="1" width="158" height="208" fill="#fff" stroke="#9a9a9a" stroke-width="1.5"/>
+          <rect x="12" y="12" width="100" height="7" fill="#3a3a3a"/>
+          <rect x="12" y="28" width="64" height="44" fill="#f4f4f2"/><rect x="84" y="28" width="64" height="44" fill="#f4f4f2"/>
+          <rect x="12" y="82" width="136" height="62" fill="#fff" stroke="#009cdf" stroke-width="3"/>
+          <rect x="20" y="90" width="70" height="7" fill="#3a3a3a"/>
+          <rect x="20" y="104" width="54" height="5" fill="#9a9a9a"/><rect x="80" y="102" width="50" height="9" fill="#d9d9d9"/>
+          <rect x="20" y="121" width="54" height="5" fill="#9a9a9a"/><rect x="80" y="118" width="58" height="11" fill="#009cdf"/>
+          <rect x="12" y="154" width="64" height="44" fill="#f4f4f2"/><rect x="84" y="154" width="64" height="44" fill="#f4f4f2"/>
+          <circle cx="148" cy="82" r="10" fill="#009cdf"/><text x="148" y="86.5" text-anchor="middle" font-size="12" font-weight="700" fill="#fff" font-family="Georgia,serif">3</text>
+        </svg>
+        <div><b><span class="n-tondo">3</span>Pagine successive</b>
+        <p>Nel riquadro <b style="display:inline">Informazioni storiche</b>, la voce <b style="display:inline">Spesa annua sostenuta</b>: la somma delle bollette dell&#8217;ultimo anno, senza il canone Rai</p></div>
+      </div>
+    </div>
+    <p class="nota-guida">Schema delle bollette del mercato libero e delle tutele graduali, in vigore dal 1&#176; luglio 2025 (ARERA, delibere 315/2024 e 204/2025). I clienti in maggior tutela ricevono una bolletta in un formato diverso. Il canone Rai non conta: se sommi tu gli importi delle bollette, toglilo</p>
+  </dialog>
 </div>
 <script>
 const P = {"res": {"pe": 0.26898, "pd": 0.01773, "ppe": -0.01027, "pcv": 41.18, "disp": 1.107, "sigma3": 0.0119, "uc3": 0.00276, "uc6_e": 7e-05, "sigma1": 23.04, "sigma2": 23.52, "uc6_p": 0.1988, "asos_e": 0.031515, "arim_e": 0.001638, "oneri_fissi": 0.0}, "nonres": {"pe": 0.26898, "pd": 0.01773, "ppe": -0.01027, "pcv": 41.18, "disp": 1.107, "sigma3": 0.0119, "uc3": 0.00276, "uc6_e": 7e-05, "sigma1": 23.04, "sigma2": 23.52, "uc6_p": 0.1988, "asos_e": 0.031515, "arim_e": 0.001638, "oneri_fissi": 95.0916}, "accisa": 0.0227, "iva": 0.1, "perdite": 0.1, "taglio": 15.0, "onere": 0.4};
 const $ = id => document.getElementById(id);
-const st = {kwh: 2000, kw: 3, res: true, fisso: false};
+const st = {modo: 'rif', kwh: 2000, kw: 3, res: true, fisso: false, spesa: null};
 
 function it(x, d) {
   const s = Math.abs(x).toFixed(d).split('.');
@@ -125,6 +228,7 @@ function it(x, d) {
   return (x < 0 ? '\u2212' : '') + s.join(',');
 }
 const euro = (x, d = 2) => it(x, d) + ' \u20ac';
+const RIGHE = 'repeating-linear-gradient(135deg,var(--blu) 0 3px,#fff 3px 6px)';
 
 function tassati(kwh, kw, res) {
   if (!res || kw > 3) return kwh;
@@ -145,6 +249,9 @@ function spesa(kwh, kw, res, dPun) {
   return {energia, trasporto, oneri, imposte: accisa + iva, totale: imp + iva};
 }
 
+// taglio lordo in bolletta: vale per ogni contratto a prezzo variabile, dipende solo dai kWh
+const lordoKwh = kwh => P.taglio / 1000 * (1 + P.perdite) * kwh * (1 + P.iva);
+
 const VOCI = [
   ['energia', 'Materia energia', 'var(--blu)'],
   ['trasporto', 'Trasporto e contatore', 'var(--g-s)'],
@@ -153,39 +260,63 @@ const VOCI = [
 ];
 
 function aggiorna() {
-  const a = spesa(st.kwh, st.kw, st.res, 0);
-  const b = spesa(st.kwh, st.kw, st.res, -P.taglio);
-  const lordo = a.totale - b.totale, onere = P.onere * lordo, netto = lordo - onere;
+  const mia = st.modo === 'mia';
   $('sim').classList.toggle('f', st.fisso);
+  $('sim').classList.toggle('mia', mia);
+  const lordo = lordoKwh(st.kwh), onere = P.onere * lordo, netto = lordo - onere;
+
+  let totale = null, rif = null;
+  if (mia) {
+    const s = st.spesa;
+    const ok = s !== null && s > 0 && s / st.kwh >= 0.10 && s / st.kwh <= 1.50;
+    $('avviso').hidden = !(s !== null && s > 0 && !ok);
+    $('avviso').textContent = 'La spesa sembra insolita per questo consumo: controlla di aver inserito quella di un anno intero, non di una sola bolletta';
+    if (ok) totale = s;
+  } else {
+    rif = spesa(st.kwh, st.kw, st.res, 0);
+    totale = rif.totale;
+  }
+
   if (st.fisso) {
     $('nb').textContent = '0 \u20ac';
     $('nbT').innerHTML = 'di risparmio finch\xe9<br>il contratto non scade';
   } else {
     $('nb').textContent = it(netto, 0) + ' \u20ac';
-    $('nbT').innerHTML = 'risparmio netto in un anno<br>' + it(netto / 12, 2).replace(/^/, '') + ' \u20ac al mese, il ' + it(netto / a.totale * 100, 1) + '% della bolletta';
+    $('nbT').innerHTML = 'risparmio netto in un anno<br>' + it(netto / 12, 2) + ' \u20ac al mese' +
+      (totale ? ', il ' + it(netto / totale * 100, 1) + '% della ' + (mia ? 'tua bolletta' : 'bolletta') : '');
   }
   $('nbBox').title = 'Risparmio netto: ' + euro(netto) + ' in un anno (' + euro(netto / 12) + ' al mese)';
   $('cLordo').textContent = '\u2212' + euro(lordo);
   $('cOnere').textContent = '+' + euro(onere);
   $('cNetto').textContent = '\u2212' + euro(netto);
-  $('sOggi').textContent = euro(a.totale);
-  $('sDec').textContent = euro(a.totale - netto);
 
-  let h = '', l = '';
-  for (const [k, nome, col] of VOCI) {
-    let w = a[k] / a.totale * 100;
-    if (k === 'energia' && !st.fisso) {
-      const wr = netto / a.totale * 100;
-      h += `<div style="width:${(w - wr).toFixed(2)}%;background:${col}" title="${nome}: ${euro(a[k])}"></div>`;
-      h += `<div style="width:${wr.toFixed(2)}%;background:repeating-linear-gradient(135deg,var(--blu) 0 3px,#fff 3px 6px)" title="Risparmio netto con il decreto: ${euro(netto)}"></div>`;
+  $('grafico').hidden = !totale;
+  $('vuoto').hidden = !!totale;
+  if (totale) {
+    let h = '', l = '';
+    const wr = st.fisso ? 0 : netto / totale * 100;
+    if (mia) {
+      $('titBarra').textContent = 'LA TUA SPESA IN UN ANNO';
+      $('etOggi').textContent = 'La tua spesa';
+      h += `<div style="width:${(100 - wr).toFixed(2)}%;background:var(--g-s)" title="La tua spesa annua: ${euro(totale)}"></div>`;
+      l += `<span><i style="background:var(--g-s)"></i>La tua spesa ${euro(totale, 0)}</span>`;
     } else {
-      h += `<div style="width:${w.toFixed(2)}%;background:${col}" title="${nome}: ${euro(a[k])}"></div>`;
+      $('titBarra').textContent = 'LA BOLLETTA DI RIFERIMENTO IN UN ANNO';
+      $('etOggi').textContent = 'Con le tariffe di oggi';
+      for (const [k, nome, col] of VOCI) {
+        const w = rif[k] / totale * 100 - (k === 'energia' ? wr : 0);
+        h += `<div style="width:${w.toFixed(2)}%;background:${col}" title="${nome}: ${euro(rif[k])}"></div>`;
+        if (k === 'energia' && wr) h += `<div style="width:${wr.toFixed(2)}%;background:${RIGHE}" title="Risparmio netto con il decreto: ${euro(netto)}"></div>`;
+        l += `<span title="${nome}: ${euro(rif[k])}"><i style="background:${col}"></i>${nome} ${euro(rif[k], 0)}</span>`;
+      }
     }
-    l += `<span title="${nome}: ${euro(a[k])}"><i style="background:${col}"></i>${nome} ${euro(a[k], 0)}</span>`;
+    if (mia && wr) h += `<div style="width:${wr.toFixed(2)}%;background:${RIGHE}" title="Risparmio netto con il decreto: ${euro(netto)}"></div>`;
+    if (wr) l += `<span><i style="background:${RIGHE};outline:1px solid var(--blu)"></i>Il risparmio netto</span>`;
+    $('barra').innerHTML = h;
+    $('leg').innerHTML = l;
+    $('sOggi').textContent = euro(totale);
+    $('sDec').textContent = euro(totale - netto);
   }
-  if (!st.fisso) l += `<span><i style="background:repeating-linear-gradient(135deg,var(--blu) 0 3px,#fff 3px 6px);outline:1px solid var(--blu)"></i>Il risparmio netto</span>`;
-  $('barra').innerHTML = h;
-  $('leg').innerHTML = l;
   segnala();
 }
 
@@ -201,18 +332,33 @@ function setKwh(v, daRange) {
   premi('preset', st.kwh);
   aggiorna();
 }
+const gruppo = (id, f) => $(id).addEventListener('click', e => { const b = e.target.closest('button'); if (b) { f(b.dataset.v); premi(id, b.dataset.v); aggiorna(); } });
 $('kwh').addEventListener('input', e => setKwh(e.target.value, false));
 $('kwh').addEventListener('change', e => { if (!(Number(e.target.value) > 0)) e.target.value = st.kwh; });
 $('kwhR').addEventListener('input', e => { $('kwh').value = e.target.value; setKwh(e.target.value, true); });
 $('preset').addEventListener('click', e => { const b = e.target.closest('button'); if (b) { $('kwh').value = b.dataset.v; setKwh(b.dataset.v, false); } });
-$('kw').addEventListener('click', e => { const b = e.target.closest('button'); if (b) { st.kw = Number(b.dataset.v); premi('kw', b.dataset.v); aggiorna(); } });
-$('res').addEventListener('click', e => { const b = e.target.closest('button'); if (b) { st.res = b.dataset.v === '1'; premi('res', b.dataset.v); aggiorna(); } });
-$('prezzo').addEventListener('click', e => { const b = e.target.closest('button'); if (b) { st.fisso = b.dataset.v === 'fisso'; premi('prezzo', b.dataset.v); aggiorna(); } });
+$('spesa').addEventListener('input', e => { const v = parseFloat(String(e.target.value).replace(',', '.')); st.spesa = isFinite(v) && v > 0 ? v : null; aggiorna(); });
+gruppo('modo', v => { st.modo = v; });
+gruppo('kw', v => { st.kw = Number(v); });
+gruppo('res', v => { st.res = v === '1'; });
+gruppo('prezzo', v => { st.fisso = v === 'fisso'; });
+
+// popup: si apre sotto il pulsante (dentro un iframe alto il centro della finestra pu\xf2 non essere visibile)
+const guida = $('guida');
+$('apriGuida').addEventListener('click', () => {
+  const r = $('apriGuida').getBoundingClientRect();
+  guida.style.top = Math.max(8, window.scrollY + r.top - 40) + 'px';
+  if (guida.showModal) guida.showModal(); else guida.setAttribute('open', '');
+  segnala();
+});
+$('chiudiGuida').addEventListener('click', () => guida.close ? guida.close() : guida.removeAttribute('open'));
+guida.addEventListener('click', e => { if (e.target === guida) { const r = guida.getBoundingClientRect(); if (e.clientY < r.top || e.clientY > r.bottom || e.clientX < r.left || e.clientX > r.right) guida.close(); } });
 
 // altezza per l'iframe del CMS (messaggio standard; ignorato se nessuno lo ascolta)
 function segnala() {
-  try { parent.postMessage({sentinel: 'amp', type: 'embed-size', height: document.documentElement.scrollHeight}, '*'); } catch (e) {}
-  try { parent.postMessage({type: 'simulatore-bolletta-altezza', height: document.documentElement.scrollHeight}, '*'); } catch (e) {}
+  const h = Math.max(document.documentElement.scrollHeight, guida.open ? guida.offsetTop + guida.offsetHeight + 16 : 0);
+  try { parent.postMessage({sentinel: 'amp', type: 'embed-size', height: h}, '*'); } catch (e) {}
+  try { parent.postMessage({type: 'simulatore-bolletta-altezza', height: h}, '*'); } catch (e) {}
 }
 window.addEventListener('resize', segnala);
 aggiorna();
