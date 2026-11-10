@@ -123,15 +123,12 @@ def genera_html(periodo, url, res, nonres, p):
              + link("https://www.arera.it/fileadmin/allegati/relaz_ann/26/RA26_Volume_1.pdf",
                     "Relazione annuale 2026, vol. 1") + " (utenze per tipo di prezzo, pp. 156, 199 e 201) e "
              + link("https://www.arera.it/fileadmin/allegati/docs/25/204-2025-R-com-ALLEGATO_A.pdf",
-                    "glossario della bolletta") + f"; {p['fonte_decreto']}; elaborazione")
-    note = (f"Bolletta di riferimento: tariffe ARERA di {periodo} per i clienti vulnerabili, tasse incluse, "
-            f"come se restassero uguali per dodici mesi; nel mercato libero i prezzi sono diversi. "
-            f"Il risparmio netto vale per tutti i contratti a prezzo variabile. {p['nota_decreto']}")
+                    "glossario della bolletta"))
     arr = lambda d: {k: round(v, 6) for k, v in d.items()}
     parametri = {"res": arr(res), "nonres": arr(nonres), "accisa": p["accisa_eur_kwh"], "iva": p["iva"],
                  "perdite": p["perdite_bt"], "taglio": p["taglio_eur_mwh"], "onere": p["onere_quota"]}
     html = (QUI / "modello.html").read_text(encoding="utf8")
-    html = html.replace("__FONTS__", FONTS).replace("__NOTE__", note).replace("__FONTE__", fonte)
+    html = html.replace("__FONTS__", FONTS).replace("__FONTE__", fonte)
     for k, v in COLORI.items():
         html = html.replace(k, v)
     html = html.replace("__PARAMETRI__", json.dumps(parametri))
